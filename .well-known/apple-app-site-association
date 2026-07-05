@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["Q25GQ4F3BA.com.CONIX.Beso"],
+        "components": [
+          {
+            "/": "/join*",
+            "comment": "Envela Einladungslink (auto-join per Code)"
+          }
+        ]
+      }
+    ]
+  }
+}
