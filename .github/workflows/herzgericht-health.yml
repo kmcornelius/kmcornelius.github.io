@@ -1,0 +1,41 @@
+name: HERZGERICHT production availability
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17,47 * * * *'
+permissions: {}
+concurrency:
+  group: herzgericht-health
+  cancel-in-progress: false
+jobs:
+  public-endpoints:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Check live public endpoints without user data or purchases
+        shell: python
+        run: |
+          import json, time, urllib.request
+          targets = {
+            'Community API': ('https://rfveabdfndzkvttmvnwn.supabase.co/functions/v1/herzgericht-api/health', '"ok":true'),
+            'Privacy': ('https://kmcornelius.github.io/herzgericht/privacy.html', 'Supabase'),
+            'Support': ('https://kmcornelius.github.io/herzgericht/support.html', 'Support'),
+            'AdMob seller file': ('https://kmcornelius.github.io/app-ads.txt', 'google.com, pub-2971275053958247, DIRECT, f08c47fec0942fa0'),
+          }
+          failed = []
+          for name, (url, expected) in targets.items():
+            for attempt in range(2):
+              try:
+                with urllib.request.urlopen(url, timeout=20) as response:
+                  assert response.status == 200
+                  assert expected in response.read(250000).decode()
+                print(name + ': OK')
+                break
+              except Exception:
+                if attempt == 0:
+                  time.sleep(5)
+                else:
+                  print('::error::' + name + ' unavailable or unexpected response')
+                  failed.append(name)
+          if failed:
+            raise SystemExit(1)
