@@ -1,11 +1,11 @@
-name: HERZGERICHT production availability
+name: Herzurteil production availability
 on:
   workflow_dispatch:
   schedule:
     - cron: '17,47 * * * *'
 permissions: {}
 concurrency:
-  group: herzgericht-health
+  group: herzurteil-health
   cancel-in-progress: false
 jobs:
   public-endpoints:
@@ -18,8 +18,11 @@ jobs:
           import json, time, urllib.request
           targets = {
             'Community API': ('https://rfveabdfndzkvttmvnwn.supabase.co/functions/v1/herzgericht-api/health', '"ok":true'),
-            'Privacy': ('https://kmcornelius.github.io/herzgericht/privacy.html', 'Supabase'),
-            'Support': ('https://kmcornelius.github.io/herzgericht/support.html', 'Support'),
+            'Privacy': ('https://kmcornelius.github.io/herzurteil/privacy.html', 'Supabase'),
+            'Support': ('https://kmcornelius.github.io/herzurteil/support.html', 'Support'),
+            # Alte Adressen (stehen noch in App Store Connect) leiten per Weiterleitungsseite weiter.
+            'Legacy privacy redirect': ('https://kmcornelius.github.io/herzgericht/privacy.html', '/herzurteil/privacy.html'),
+            'Legacy support redirect': ('https://kmcornelius.github.io/herzgericht/support.html', '/herzurteil/support.html'),
             'AdMob seller file': ('https://kmcornelius.github.io/app-ads.txt', 'google.com, pub-2971275053958247, DIRECT, f08c47fec0942fa0'),
           }
           failed = []
